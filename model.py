@@ -8,6 +8,7 @@ class Model(QtCore.QAbstractTableModel):
   def __init__(self, store, parent=None, *args):
     super(Model, self).__init__(parent, *args)
     self.store = store
+    self.storeData = self.store.getShows()
     self.colors = [QtCore.Qt.gray, QtCore.Qt.green, QtCore.Qt.yellow, QtCore.Qt.red]
 
   def headerData(self, row, orientation, status):
@@ -24,7 +25,7 @@ class Model(QtCore.QAbstractTableModel):
         return "Last Update"
 
   def rowCount(self, parent):
-    return len(self.store.getShows())
+    return len(self.storeData)
 
   def columnCount(self, parent):
     return 4
@@ -35,7 +36,7 @@ class Model(QtCore.QAbstractTableModel):
     
     row = index.row()
     column = index.column()
-    data = self.store.getShows()[row]
+    data = self.storeData[row]
 
     if role == QtCore.Qt.CheckStateRole:
       if column == 0:
@@ -65,7 +66,7 @@ class Model(QtCore.QAbstractTableModel):
     
     row = index.row()
     column = index.column()
-    data = self.store.getShowById(self.store.getShows()[row].show_id)
+    data = self.store.getShowById(self.storeData[row].show_id)
 
     if role == QtCore.Qt.CheckStateRole:
       if column == 0:
@@ -74,7 +75,7 @@ class Model(QtCore.QAbstractTableModel):
         else:
           data.enabled = True
         self.store.commit()
-        self.data = self.store.getShows()
+        self.storeData = self.store.getShows()
         self.dataChanged.emit(index, index)
         return True
     if role == QtCore.Qt.EditRole:
@@ -91,6 +92,7 @@ class Model(QtCore.QAbstractTableModel):
     show = episoder.Show("", url="http://URL")
     self.store.addShow(show)
     self.store.commit()
+    self.storeData = self.store.getShows()
     self.endInsertRows()
     return True
 
@@ -100,6 +102,7 @@ class Model(QtCore.QAbstractTableModel):
     self.beginRemoveRows(parent, position, position)
     self.store.removeShow(data.show_id)
     self.store.commit()
+    self.storeData = self.store.getShows()
     self.endRemoveRows()
     return True
     

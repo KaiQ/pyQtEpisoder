@@ -10,10 +10,23 @@ import os
 
 class MainWindow(QtGui.QWidget):
 
-  def _update(self):
+  def _update_all(self):
     shows = self.store.getEnabledShows()
+    prog = QtGui.QProgressDialog("Text1", "text2", 0, len(shows), self)
+    prog.setWindowModality(QtCore.Qt.WindowModal)
+    prog.setValue(0)
+    num = 1
     for show in shows:
+      prog.setValue(num)
+      num+=1
       show.update(self.store, "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)")
+    self.store.update()
+
+  def _update_selected(self):
+    shows = self.store.getEnabledShows()
+    for show in xrange(len(shows)):
+      if self.model.data(self.model.index(self.ui.view.currentIndex().row(),2)).toPyObject() == shows[show].url:
+        shows[show].update(self.store, "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)")
     self.store.update()
 
   def _add(self):
@@ -32,7 +45,8 @@ class MainWindow(QtGui.QWidget):
     self.model = model.Model(self.store)
     self.ui.view.setModel(self.model)
 
-    self.ui.bUpdate.clicked.connect(self._update)
+    self.ui.bUpdateAll.clicked.connect(self._update_all)
+    self.ui.bUpdateSelected.clicked.connect(self._update_selected)
     self.ui.bAdd.clicked.connect(self._add)
     self.ui.bRemove.clicked.connect(self._remove)
 

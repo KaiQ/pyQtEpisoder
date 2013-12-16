@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'GUI/pyQtEpisoder.ui'
 #
-# Created: Thu Sep 26 00:30:01 2013
+# Created: Mon Dec 16 15:30:51 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,16 +27,21 @@ class Ui_Episoder(object):
     def setupUi(self, Episoder):
         Episoder.setObjectName(_fromUtf8("Episoder"))
         Episoder.resize(473, 325)
-        self.horizontalLayout = QtGui.QHBoxLayout(Episoder)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.verticalLayout_2 = QtGui.QVBoxLayout(Episoder)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.view = QtGui.QTableView(Episoder)
         self.view.setObjectName(_fromUtf8("view"))
-        self.horizontalLayout.addWidget(self.view)
+        self.horizontalLayout_3.addWidget(self.view)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.bUpdate = QtGui.QPushButton(Episoder)
-        self.bUpdate.setObjectName(_fromUtf8("bUpdate"))
-        self.verticalLayout.addWidget(self.bUpdate)
+        self.bUpdateAll = QtGui.QPushButton(Episoder)
+        self.bUpdateAll.setObjectName(_fromUtf8("bUpdateAll"))
+        self.verticalLayout.addWidget(self.bUpdateAll)
+        self.bUpdateSelected = QtGui.QPushButton(Episoder)
+        self.bUpdateSelected.setObjectName(_fromUtf8("bUpdateSelected"))
+        self.verticalLayout.addWidget(self.bUpdateSelected)
         self.bAdd = QtGui.QPushButton(Episoder)
         self.bAdd.setObjectName(_fromUtf8("bAdd"))
         self.verticalLayout.addWidget(self.bAdd)
@@ -48,7 +53,8 @@ class Ui_Episoder(object):
         self.bClose = QtGui.QPushButton(Episoder)
         self.bClose.setObjectName(_fromUtf8("bClose"))
         self.verticalLayout.addWidget(self.bClose)
-        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.horizontalLayout_3.addLayout(self.verticalLayout)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
         self.retranslateUi(Episoder)
         QtCore.QObject.connect(self.bClose, QtCore.SIGNAL(_fromUtf8("clicked()")), Episoder.close)
@@ -56,7 +62,8 @@ class Ui_Episoder(object):
 
     def retranslateUi(self, Episoder):
         Episoder.setWindowTitle(_translate("Episoder", "Episoder", None))
-        self.bUpdate.setText(_translate("Episoder", "Update", None))
+        self.bUpdateAll.setText(_translate("Episoder", "Update All", None))
+        self.bUpdateSelected.setText(_translate("Episoder", "Update Selected", None))
         self.bAdd.setText(_translate("Episoder", "Add", None))
         self.bRemove.setText(_translate("Episoder", "Remove", None))
         self.bClose.setText(_translate("Episoder", "Close", None))
