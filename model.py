@@ -80,7 +80,7 @@ class Model(QtCore.QAbstractTableModel):
     return False
 
   def insertRow(self, position, parent = QtCore.QModelIndex()):
-    if self.store.getShowByUrl("http://URL"):
+    if self.store.urlExists("http://URL"):
       return False
     self.beginInsertRows(parent, self.rowCount(None), self.rowCount(None))
     show = episoder.Show("", url="http://URL")

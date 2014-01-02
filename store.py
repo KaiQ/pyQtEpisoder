@@ -51,6 +51,9 @@ class Store(QtCore.QObject):
   def commit(self):
     self.store.commit()
 
+  def urlExists(self, url):
+    return url in [self.getURL(x) for x in xrange(self.showsCount)]
+
   def addShow(self, show):
     self.store.addShow(show)
     self.commit()
