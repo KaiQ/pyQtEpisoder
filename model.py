@@ -8,7 +8,6 @@ class Model(QtCore.QAbstractTableModel):
   def __init__(self, store, parent=None, *args):
     super(Model, self).__init__(parent, *args)
     self.store = store
-    self.storeData = self.store.getShows()
     self.colors = [QtCore.Qt.gray, QtCore.Qt.green, QtCore.Qt.yellow, QtCore.Qt.red]
 
   def headerData(self, row, orientation, status):
@@ -25,7 +24,7 @@ class Model(QtCore.QAbstractTableModel):
         return "Last Update"
 
   def rowCount(self, parent):
-    return len(self.storeData)
+    return self.store.getShowsCount()
 
   def columnCount(self, parent):
     return 4
@@ -36,26 +35,25 @@ class Model(QtCore.QAbstractTableModel):
     
     row = index.row()
     column = index.column()
-    data = self.storeData[row]
 
     if role == QtCore.Qt.CheckStateRole:
       if column == 0:
-        return QtCore.Qt.CheckState(data.enabled)
+        return QtCore.Qt.CheckState(self.store.isEnabled(row))
 
     if role == QtCore.Qt.BackgroundRole:
-      if not data.show_name:
+      if not self.store.getName(row):
         return QtGui.QBrush(self.colors[0])
-      return QtGui.QBrush(self.colors[data.status])
+      return QtGui.QBrush(self.colors[self.store[row].status])
 
     if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
       if column == 1:
-        return QtCore.QVariant(data.show_name)
+        return QtCore.QVariant(self.store.getName(row))
       if column == 2:
-        return QtCore.QVariant(data.url)
+        return QtCore.QVariant(self.store.getURL(row))
       if column == 3:
-        return QtCore.QVariant("%s" % (data.updated))
+        return QtCore.QVariant("%s" % (self.store[row].updated))
       if column == 4:
-        return data.show_id
+        return self.store.getID(row)
 
     return QtCore.QVariant()
 
@@ -66,22 +64,18 @@ class Model(QtCore.QAbstractTableModel):
     
     row = index.row()
     column = index.column()
-    data = self.store.getShowById(self.storeData[row].show_id)
 
     if role == QtCore.Qt.CheckStateRole:
       if column == 0:
-        if data.enabled:
-          data.enabled = False
+        if self.store.isEnabled(row):
+          self.store.setEnabled(row, False)
         else:
-          data.enabled = True
-        self.store.commit()
-        self.storeData = self.store.getShows()
+          self.store.setEnabled(row, True)
         self.dataChanged.emit(index, index)
         return True
     if role == QtCore.Qt.EditRole:
       if column == 2:
-        data.url = str(value.toPyObject())
-        self.store.commit()
+        self.store.setURL(row, str(value.toPyObject()))
         self.dataChanged.emit(index, index)
     return False
 
@@ -91,22 +85,15 @@ class Model(QtCore.QAbstractTableModel):
     self.beginInsertRows(parent, self.rowCount(None), self.rowCount(None))
     show = episoder.Show("", url="http://URL")
     self.store.addShow(show)
-    self.store.commit()
-    self.storeData = self.store.getShows()
     self.endInsertRows()
     return True
 
 
   def removeRow(self, position, parent = QtCore.QModelIndex()):
-    data = self.store.getShows()[position]
     self.beginRemoveRows(parent, position, position)
-    self.store.removeShow(data.show_id)
-    self.store.commit()
-    self.storeData = self.store.getShows()
+    self.store.removeShow(self.store[position].show_id)
     self.endRemoveRows()
     return True
-    
-
 
   def flags(self, index):
     column = index.column()

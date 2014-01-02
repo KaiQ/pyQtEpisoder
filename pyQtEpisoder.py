@@ -2,32 +2,25 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4 import QtCore, QtGui
-import pyepisoder.episoder as episoder
 import ui
 import model
+import store
 import sys
 import os
 
 class MainWindow(QtGui.QWidget):
+  
+  Update = QtCore.pyqtSignal(int);
 
   def _update_all(self):
-    shows = self.store.getEnabledShows()
-    prog = QtGui.QProgressDialog("Text1", "text2", 0, len(shows), self)
-    prog.setWindowModality(QtCore.Qt.WindowModal)
-    prog.setValue(0)
-    num = 1
-    for show in shows:
-      prog.setValue(num)
-      num+=1
-      show.update(self.store, "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)")
-    self.store.update()
+    self.Update.connect(self.store.update_all)
+    self.Update.emit(0)
+    self.Update.disconnect(self.store.update_all)
 
   def _update_selected(self):
-    shows = self.store.getEnabledShows()
-    for show in xrange(len(shows)):
-      if self.model.data(self.model.index(self.ui.view.currentIndex().row(),2)).toPyObject() == shows[show].url:
-        shows[show].update(self.store, "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)")
-    self.store.update()
+    self.Update.connect(self.store.update_single)
+    self.Update.emit(self.ui.view.currentIndex().row())
+    self.Update.disconnect(self.store.update_single)
 
   def _add(self):
     self.model.insertRow(0)
@@ -40,8 +33,7 @@ class MainWindow(QtGui.QWidget):
     self.ui = ui.Ui_Episoder()
     self.ui.setupUi(self)
     
-    self.store = episoder.DataStore(os.path.join(os.environ["HOME"], '.episodes'))
-    self.store.update()
+    self.store = store.Store(os.path.join(os.environ["HOME"], '.episodes'), self)
     self.model = model.Model(self.store)
     self.ui.view.setModel(self.model)
 
