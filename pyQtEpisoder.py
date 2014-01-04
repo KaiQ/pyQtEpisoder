@@ -39,7 +39,7 @@ class MainWindow(QtGui.QWidget):
     self.sortModel = QtGui.QSortFilterProxyModel()
     self.sortModel.setSourceModel(self.model)
     self.ui.view.setModel(self.sortModel)
-    self.ui.view.setSortingEnabled(True)
+    self.ui.view.resizeColumnsToContents()
 
     self.ui.bUpdateAll.clicked.connect(self._update_all)
     self.ui.bUpdateSelected.clicked.connect(self._update_selected)
