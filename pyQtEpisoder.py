@@ -26,7 +26,8 @@ class MainWindow(QtGui.QWidget):
     self.model.insertRow(0)
 
   def _remove(self):
-    self.model.removeRow(self.ui.view.currentIndex().row())
+    if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, "Message", "Do you realy want to delete \"%s\"" % self.store.getName(self.ui.view.currentIndex().row()), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No):
+      self.model.removeRow(self.ui.view.currentIndex().row())
 
   def __init__(self, parent=None):
     super(MainWindow, self).__init__(parent)
