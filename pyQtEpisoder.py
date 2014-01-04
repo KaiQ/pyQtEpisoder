@@ -36,7 +36,10 @@ class MainWindow(QtGui.QWidget):
     
     self.store = store.Store(os.path.join(os.environ["HOME"], '.episodes'), self)
     self.model = model.Model(self.store)
-    self.ui.view.setModel(self.model)
+    self.sortModel = QtGui.QSortFilterProxyModel()
+    self.sortModel.setSourceModel(self.model)
+    self.ui.view.setModel(self.sortModel)
+    self.ui.view.setSortingEnabled(True)
 
     self.ui.bUpdateAll.clicked.connect(self._update_all)
     self.ui.bUpdateSelected.clicked.connect(self._update_selected)
