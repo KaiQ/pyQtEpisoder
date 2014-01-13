@@ -9,6 +9,7 @@ class Model(QtCore.QAbstractTableModel):
     super(Model, self).__init__(parent, *args)
     self.store = store
     self.colors = [QtCore.Qt.gray, QtCore.Qt.green, QtCore.Qt.yellow, QtCore.Qt.red]
+    self.status = ["?Invalid", "Running", "Suspended", "Ended"]
 
   def headerData(self, row, orientation, status):
     if orientation == QtCore.Qt.Vertical:
@@ -22,12 +23,14 @@ class Model(QtCore.QAbstractTableModel):
         return "URL"
       if row == 3:
         return "Last Update"
+      if row == 4:
+        return "Online Status"
 
   def rowCount(self, parent):
     return self.store.getShowsCount()
 
   def columnCount(self, parent):
-    return 4
+    return 5
 
   def data(self, index, role = QtCore.Qt.DisplayRole):
     if not index.isValid():
@@ -53,7 +56,9 @@ class Model(QtCore.QAbstractTableModel):
       if column == 3:
         return QtCore.QVariant("%s" % (self.store[row].updated))
       if column == 4:
-        return self.store.getID(row)
+        if not self.store.getName(row):
+          return QtCore.QVariant(self.status[0])
+        return QtCore.QVariant(self.status[self.store[row].status])
 
     return QtCore.QVariant()
 
